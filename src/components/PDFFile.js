@@ -1,6 +1,6 @@
 import { Page, Text, View, Image, Document, StyleSheet} from "@react-pdf/renderer";
-import concert from "./image/Concert.jpg";
-import Qrcode from "./QrCode";
+import Qrcode from "qrcode";
+import {useState} from 'react';
 
 
 const styles = StyleSheet.create({
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     },
     infoContainer:{
         marginHorizontal: 15,
-        width: "40%"
+        width: "60%"
         
     },
     container2:{
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     },
     nameContainer:{
         marginHorizontal: 15,
-        width: "40%"
+        width: "30%"
     },
     nameTitle:{
         fontSize: 7,
@@ -81,41 +81,38 @@ const styles = StyleSheet.create({
     name:{
         fontSize: 10,
     },
-    image:{
-        width: "80%",
-        marginHorizontal: "10%",
-        maxWidth: "400px",
-        marginTop: 10
-    },
     qrcode:{
-        width: 100,
+        width: 200,
     }
 });
 
 
-const PDFFile = () => {
+const PDFFile = ({event}) => {
+    const [src, setSrc] = useState("");
+
+    Qrcode.toDataURL(JSON.stringify(event)).then(setSrc);
+
     return(
         <Document>
             <Page size="A4" style={styles.body}>
                 <Text style={styles.logo}>EventMaster</Text>
                 <View style={styles.container}>
                     <View style={styles.container2}>
-                        <Text style={styles.title}>Concert de musique</Text>
-                        <Image style={styles.image} src={concert}></Image>
-                        <Text style={styles.location}>Gare Saint Sauveur Lille, 17 Boulevard Jean-Baptiste Lebas, 59800 Lille, France</Text>
-                        <Text style={styles.date}>Mardi 16 octobre 2018 de 09:00 à 17:00 (heure : France)</Text>
-                        <Text style={styles.price}>Commande gratuite</Text>
+                        <Text style={styles.title}>{event.title}</Text>
+                        <Image style={styles.image} src={event.img}/>
+                        <Text style={styles.location}>{event.location}</Text>
+                        <Text style={styles.date}>{event.date}</Text>
+                        <Text style={styles.price}>{event.price}</Text>
                         <View style={styles.container3}>
                             <View style={styles.infoContainer}>
                                 <Text style={styles.infoTitle}>Informations de commande</Text>
-                                <Text style={styles.info}>Commande N° 835038696. Commandé par andrew carpentier le 3 octobre 2018 17:21</Text>
+                                <Text style={styles.info}>{event.infoCommand}</Text>
                             </View>
                             <View style={styles.nameContainer}>
                                 <Text style={styles.nameTitle}>Nom</Text>
-                                <Text style={styles.name}>andrew carpentier</Text>
+                                <Text style={styles.name}>{event.infoName}</Text>
                             </View>
-                        <Image style={styles.qrcode} src={`data:image/png;base64,${Qrcode.path}`} ></Image>
-
+                        <Image style={styles.qrcode} src={src} />
                         </View>
                     </View>
                 </View>
